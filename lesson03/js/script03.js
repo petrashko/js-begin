@@ -37,8 +37,8 @@ function countBasketPrice() {
     // Перебрать все товары в корзине
     cart.forEach((item, index, scr) => {
         // item[0]: название
-        // item[1]: количество
-        // item[2]: цена
+        // item[1]: цена
+        // item[2]: количество
         const cost = item[1] * item[2];
         total = total + cost;
     });
