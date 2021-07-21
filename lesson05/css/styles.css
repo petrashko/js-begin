@@ -10,10 +10,34 @@
 
 body {
     font-size: calc(0.5em + 1vw);
+    min-height: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .text-center {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+div.chess-board {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+div.chess-board-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+div.chess-board-cell {
+    width: 3rem;
+    height: 3rem;
 }
