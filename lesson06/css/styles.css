@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    /*
+    Свойства width и height включают контент, внутренний отступ и границы,
+    но НЕ включают внешний отступ (margin)
+    */
+    box-sizing: border-box;
+}
+
+body {
+    /*outline: 1px solid red;*/
+    font-size: calc(0.5em + 1vw);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.text-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+div.catalog {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
