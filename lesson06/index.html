@@ -7,16 +7,46 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-<h3>Домашнее задание 6</h3>
-<br/><br/>
+<h3 class="header">Домашнее задание 6</h3>
+<br/>
 <h4>Каталог товаров</h4>
 <div class="catalog"></div>
-<br/><br/>
+<br/>
 <h4>Вывод информации о корзине</h4>
 <div class="cart-info"></div>
-<br/><br/>
-<h4>Карусель</h4>
-<div class="carousel"></div>
+<br/>
+
+<h4>Слайдер</h4>
+<div class="carousel" id="carousel">
+    <div class="carousel-backdrop">
+        <button class="carousel-close" id="close">Закрыть</button>
+    </div>
+    <div class="carousel-body">
+        <img src="images/arrowLeft.svg" alt="picture" class="carousel-arrow-left" />
+        <div class="carousel-wrap">
+            <!--
+            <img src="images/imgProd-1.jpg" alt="picture" />
+            -->
+        </div>
+        <img src="images/arrowRight.svg" alt="picture" class="carousel-arrow-right" />
+    </div>
+</div>
+<div class="my-carousel">
+    <ul id="thumbs">
+        <li data-image-num="1"><img src="images/imgProd-1.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="2"><img src="images/imgProd-2.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="3"><img src="images/imgProd-3.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="4"><img src="images/imgProd-4.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="5"><img src="images/imgProd-5.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="6"><img src="images/imgProd-6.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="7"><img src="images/imgProd-7.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="8"><img src="images/imgProd-8.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="9"><img src="images/imgProd-9.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="10"><img src="images/imgProd-10.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="11"><img src="images/imgProd-11.jpg" width="72" height="85" alt="picture" /></li>
+        <li data-image-num="12"><img src="images/imgProd-12.jpg" width="72" height="85" alt="picture" /></li>
+      </ul>
+</div>
 
 <script type="module">
     import { Lesson06 } from './js/script06.js';

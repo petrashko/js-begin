@@ -14,7 +14,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -24,9 +24,90 @@ body {
     align-items: center;
 }
 
+h3.header {
+    margin-top: 2rem;
+}
+
 div.catalog {
+    width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
+}
+
+button.add-to-cart {
+    display: box;
+    margin-top: 1rem;
+    padding: 1rem 2rem;
+    border: 1px solid #000000;
+}
+
+/* Стили модального окна для слайдера */
+
+.carousel {
+    display: none;
+}
+
+.carousel-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.carousel-body {
+    position: fixed;
+    top: 3rem;
+    bottom: 3em;
+    right: 10%;
+    left: 10%;
+    /*padding: 2em 3em;*/
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: auto;
+}
+
+div.carousel-wrap {
+    margin: 0.5rem auto 1.5rem auto;
+}
+
+img.carousel-arrow-left {
+    margin-left: 1rem;
+    margin-right: auto;
+    cursor: pointer;
+}
+
+img.carousel-arrow-right {
+    margin-right: 1rem;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.carousel-close {
+    position: absolute;
+    top: 0.3em;
+    right: 0.3em;
+    padding: 0.3em;
+    cursor: pointer;
+}
+
+button#open {
+    margin-bottom: 2rem;
+}
+
+div.my-carousel {
+    margin-bottom: 2rem;
+}
+
+#thumbs li {
+    display: inline;
+    list-style: none;
+    margin: 2px;
+    cursor: pointer;
+    /*padding: 3px;*/
 }
