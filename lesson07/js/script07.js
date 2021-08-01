@@ -87,7 +87,7 @@ const map = {
         }
     },
 
-    render(snakePointsArray, foodPoint) {
+    render(snakePointsArray, foodPoint, obstaclePointList) {
         for (const cell of this.usedCells) {
             cell.className = 'cell';
         }
@@ -103,10 +103,18 @@ const map = {
         const foodCell = this.cells[`x${foodPoint.x}_y${foodPoint.y}`];
         foodCell.classList.add('food');
         this.usedCells.push(foodCell);
+
+        // obstaclePoinList: Массив с точками препятствий
+        obstaclePointList.forEach((obstaclePoint, index) => {
+            const obstacleCell = this.cells[`x${obstaclePoint.x}_y${obstaclePoint.y}`];
+            obstacleCell.classList.add('obstacle');
+            this.usedCells.push(obstacleCell);
+        });
     },
 };
 
 const snake = {
+    config: config,
     body: [],
     direction: null,
     lastStepDirection: null,
@@ -151,19 +159,50 @@ const snake = {
 
     getNextStepHeadPoint() {
         const firstPoint = this.getBody()[0];
+        // Задание 3 - убрать границы поля
+        let newX = firstPoint.x;
+        let newY = firstPoint.y;
+
         switch(this.direction) {
             case 'up':
-                return {x: firstPoint.x, y: firstPoint.y - 1};
+                //return {x: firstPoint.x, y: firstPoint.y - 1};
+                newY--;
+                if (newY < 0) {
+                    // Змейка появляется снизу
+                    newY = this.config.getRowsCount() - 1;
+                }
+                break;
             case 'right':
-                return {x: firstPoint.x + 1, y: firstPoint.y};
+                //return {x: firstPoint.x + 1, y: firstPoint.y};
+                newX++;
+                if (newX >= this.config.getColsCount()) {
+                    // Змейка появляется слева
+                    newX = 0;
+                }
+                break;
             case 'down':
-                return {x: firstPoint.x, y: firstPoint.y + 1};
+                //return {x: firstPoint.x, y: firstPoint.y + 1};
+                newY++;
+                if (newY >= this.config.getRowsCount()) {
+                    // Змейка появляется сверху
+                    newY = 0;
+                }
+                break;
             case 'left':
-                return {x: firstPoint.x - 1, y: firstPoint.y};
+                //return {x: firstPoint.x - 1, y: firstPoint.y};
+                newX--;
+                if (newX < 0) {
+                    // Змейка появляется справа
+                    newX = this.config.getColsCount() - 1;
+                }
+                break;
         }
+
+        return {x: newX, y: newY};
     },
 };
 
+/*
 const food = {
     x: null,
     y: null,
@@ -184,6 +223,33 @@ const food = {
         return this.x === point.x && this.y === point.y;
     },
 };
+*/
+
+// Чтобы не дублировать код (для препятствия), решил создать класс
+class Point2D {
+    x = null;
+    y = null;
+
+    constructor() {
+        //
+    }
+
+    getCoordinates() {
+        return {
+            x: this.x,
+            y: this.y,
+        };
+    }
+
+    setCoordinates(point) {
+        this.x = point.x;
+        this.y = point.y;
+    }
+
+    isOnPoint(point) {
+        return this.x === point.x && this.y === point.y;
+    }
+}
 
 const status = {
     condition: null,
@@ -213,9 +279,14 @@ const game = {
     config,
     map,
     snake,
-    food,
+    food: new Point2D(),
+    // Задание 2 - временные препятствия на поле
+    // obstaclePoinList: Массив с точками препятствий
+    obstaclePointList: [new Point2D(), new Point2D(), new Point2D(), new Point2D(), new Point2D()],
     status,
+
     tickInterval: null,
+    obstacleInterval: null,
 
     init(userSettings = {}) {
         this.config.init(userSettings);
@@ -223,7 +294,7 @@ const game = {
 
         if (!validation.isValid) {
             for (const err of validation.errors) {
-            console.error(err);
+               console.error(err);
             }
             return;
         }
@@ -290,6 +361,9 @@ const game = {
         this.stop();
         this.snake.init(this.getStartSnakeBody(), 'up');
         this.food.setCoordinates(this.getRandomFreeCoordinates());
+        // Сгенерировать массив с точками препятствий
+        this.getObstaclePointList();
+        this.updateScore();
         this.render();
     },
 
@@ -303,7 +377,8 @@ const game = {
     },
 
     getRandomFreeCoordinates() {
-        const exclude = [this.food.getCoordinates(), ...this.snake.getBody()];
+        // this.obstaclePointList: Массив с точками препятствий
+        const exclude = [this.food.getCoordinates(), ...this.obstaclePointList, ...this.snake.getBody()];
 
         while (true) {
             const rndPoint = {
@@ -315,23 +390,43 @@ const game = {
         }
     },
 
+    // Сгенерировать массив с точками препятствий
+    getObstaclePointList() {
+        this.obstaclePointList.forEach((obstaclePoint, index) => {
+            obstaclePoint.setCoordinates(this.getRandomFreeCoordinates());
+        });
+    },
+
     play() {
         this.status.setPlaying();
+        //
         this.tickInterval = setInterval(() => {
             this.tickHandler();
         }, 1000 / this.config.getSpeed());
+
+        // Каждые 10 секунд обновлять точки с новыми препятствиями
+        // и удалить старые
+        this.obstacleInterval = setInterval(() => {
+            // Сгенерировать массив с точками препятствий
+            this.getObstaclePointList();
+        }, 10000);
+        
         this.setPlayButton('Стоп');
     },
 
     stop() {
         this.status.setStopped();
         clearInterval(this.tickInterval);
+        // Остановить генерацию препятсвий
+        clearInterval(this.obstacleInterval);
         this.setPlayButton('Старт');
     },
 
     finish() {
         this.status.setFinished();
         clearInterval(this.tickInterval);
+        // Остановить генерацию препятсвий
+        clearInterval(this.obstacleInterval);
         this.setPlayButton('Игра закончена', true);
     },
 
@@ -343,6 +438,7 @@ const game = {
         if (this.food.isOnPoint(this.snake.getNextStepHeadPoint())) {
             this.snake.growUp();
             this.food.setCoordinates(this.getRandomFreeCoordinates());
+            this.updateScore();
 
             if (this.isGameWon()) this.finish();
         }
@@ -353,11 +449,28 @@ const game = {
 
     canMakeStep() {
         const nextHeadPoint = this.snake.getNextStepHeadPoint();
+
+        let flag = false;
+        // this.obstaclePointList: Массив с точками препятствий
+        for (let obstaclePoint of this.obstaclePointList) {
+            // Столкнулись с препятствием
+            if (obstaclePoint.isOnPoint(nextHeadPoint) === true) {
+                flag = true;
+                break;
+            }
+
+        }
+
         return !this.snake.isOnPoint(nextHeadPoint) &&
+            // Столкнулись с препятствием
+            !flag; //&&
+            // Задание 3 - убрать границы поля
+            /*
             nextHeadPoint.x < this.config.getColsCount() &&
             nextHeadPoint.y < this.config.getRowsCount() &&
             nextHeadPoint.x >= 0 &&
             nextHeadPoint.y >= 0;
+            */
     },
 
     isGameWon() {
@@ -375,8 +488,17 @@ const game = {
     },
 
     render() {
-        this.map.render(this.snake.getBody(), this.food.getCoordinates());
+        this.map.render(this.snake.getBody(), this.food.getCoordinates(), this.obstaclePointList);
     },
+
+    // Задание 1 - Вывод баллов
+    updateScore() {
+        const spanScore = document.getElementById('score');
+        spanScore.textContent = this.snake.getBody().length - 1;
+        if (this.isGameWon()) {
+            spanScore.textContent += ' Вы победили!!!';
+        }
+    }
 };
 
 //*******************************************************************
@@ -386,7 +508,7 @@ const Lesson07 = {
         console.log('Lesson 7');
         console.log();
         //
-        game.init({rowsCount: 30, colsCount: 30, speed: 1, winFoodCount: 10});
+        game.init({rowsCount: 30, colsCount: 30, speed: 1, winFoodCount: 5});
     }
 }
 
